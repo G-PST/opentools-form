@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-color: 250, 250, 250;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-color));
+}
+
+.custom-upload {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-upload input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  font-size: 100px; /* Adjust the size to cover the button */
+  cursor: pointer;
+}
+
+/* Style the button */
+.custom-button {
+  background-color: #6366f1; /* Change the background color */
+  color: #fff; /* Change the text color */
+  padding: 8px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Adjust button text style as needed */
+.custom-button span {
+  font-size: 16px;
+}
