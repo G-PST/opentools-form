@@ -1,18 +1,107 @@
-import { FormMenuInterface, LanguageInterface } from "./interface";
-import { BasicFormView } from "./basic-form-view";
-import { DeveloperFormView } from "./developers-form-view";
-import { LicenseInterface } from "./interface";
+import { LanguageInterface } from "./interface";
+import { LicenseInterface, FormOption } from "./interface";
 
-export const MENUS: FormMenuInterface[] = [
+
+export const INPUTSTYLE = `outline-none text-orange-700 
+      px-2 py-1 border rounded-md outline-none w-full`;
+
+
+export const FORMOPTIONS: FormOption[] = [
     {
-        name: "Basic",
-        component: BasicFormView
+        name: "name",
+        type: "text",
+        displayName: "Organization Name",
+        required: true,
+        category: "organization"
     },
     {
-        name: "Developers",
-        component: DeveloperFormView
+        name: "description",
+        type: "text",
+        displayName: "Description",
+        required: false,
+        category: "organization"
+    },
+    {
+        name: "url",
+        type: "text",
+        displayName: "Website or URL",
+        required: false,
+        category: "organization"
+    },
+    {
+        name: "name",
+        type: "text",
+        displayName: "License Name",
+        required: true,
+        category: "license"
+    },
+    {
+        name: "spdx_id",
+        type: "text",
+        displayName: "SPDX ID",
+        required: true,
+        category: "license"
+    },
+    {
+        name: "name",
+        type: "text",
+        displayName: "Organization Name",
+        required: true,
+        category: "language"
+    },
+    {
+        name: "description",
+        type: "text",
+        displayName: "Description",
+        required: false,
+        category: "language"
+    },
+    {
+        name: "url",
+        type: "text",
+        displayName: "Website or URL",
+        required: false,
+        category: "language"
+    },
+    {
+        name: "name",
+        type: "text",
+        displayName: "Software Name",
+        required: true,
+        category: "software"
+    },
+    {
+        name: "description",
+        type: "text",
+        displayName: "Description",
+        required: false,
+        category: "software"
+    },
+    {
+        name: "url_website",
+        type: "text",
+        displayName: "Webiste",
+        required: false,
+        category: "software"
+    },
+    {
+        name: "url_sourcecode",
+        type: "text",
+        displayName: "Repository URL",
+        required: false,
+        category: "software"
+    },
+    {
+        name: "url_docs",
+        type: "text",
+        displayName: "Documentation URL",
+        required: false,
+        category: "software"
     }
-];
+]
+
+
+
 
 
 

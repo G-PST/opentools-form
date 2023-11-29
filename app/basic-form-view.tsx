@@ -1,11 +1,10 @@
 import { LICENSES, PROGRAMMING_LANGUAGES } from "./constants";
 import { FormPageProps, LanguageInterface, LicenseInterface } from "./interface";
+import { INPUTSTYLE } from "./constants";
 
 export const BasicFormView: React.FC<FormPageProps> = ({
     formData, setFormData, errors
 }) => {
-    const inputStyle = `outline-none text-orange-700 
-      px-2 py-1 border rounded-md outline-none w-full`;
     
 
     return (
@@ -19,7 +18,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                         name="name"
                         value={formData.name}
                         type="text"
-                        className={`${inputStyle} ${errors.name ? " border-red-500": ""}`}
+                        className={`${INPUTSTYLE} ${errors.name ? " border-red-500": ""}`}
                         placeholder="Name of software tool."
                         onChange={(e:React.ChangeEvent<HTMLInputElement>)=> 
                             setFormData((prev:any)=> {return {...prev, [e.target.name]: e.target.value}})}
@@ -34,7 +33,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                         name="url"
                         value={formData.url}
                         type="text"
-                        className={`${inputStyle} ${errors.url ? " border-red-500": ""}`}
+                        className={`${INPUTSTYLE} ${errors.url ? " border-red-500": ""}`}
                         placeholder="Web URL where the code is hosted."
                         onChange={(e:React.ChangeEvent<HTMLInputElement>)=> 
                             setFormData((prev:any)=> {return {...prev, [e.target.name]: e.target.value}})}
@@ -49,7 +48,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                 <textarea
                     name="description"
                     value={formData.description}
-                    className={inputStyle}
+                    className={INPUTSTYLE}
                     placeholder="Long description for software tool."
                     onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=> 
                         setFormData((prev:any)=> {return {...prev, [e.target.name]: e.target.value}})}
@@ -65,7 +64,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                         name="created"
                         type="date"
                         value={formData.created}
-                        className={inputStyle}
+                        className={INPUTSTYLE}
                         placeholder="Date when software was open sourced."
                         onChange={(e:React.ChangeEvent<HTMLInputElement>)=> 
                             setFormData((prev:any)=> {return {...prev, [e.target.name]: e.target.value}})}
@@ -75,7 +74,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                 <div>
                     <p className="pb-2"> License
                         <span className="text-red-500"> (required) </span></p>
-                    <select className={inputStyle} 
+                    <select className={INPUTSTYLE} 
                         name="license" 
                         value={formData.license}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>)=> 
@@ -99,7 +98,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                         name="email"
                         value={formData.email}
                         type="text"
-                        className={`${inputStyle} ${errors.email ? " border-red-500": ""}`}
+                        className={`${INPUTSTYLE} ${errors.email ? " border-red-500": ""}`}
                         placeholder="Contact email if someone wants to reach out to you."
                         onChange={(e:React.ChangeEvent<HTMLInputElement>)=> 
                             setFormData((prev:any)=> {return {...prev, [e.target.name]: e.target.value}})}
@@ -114,7 +113,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                         name="organization"
                         value={formData.organization}
                         type="text"
-                        className={inputStyle}
+                        className={INPUTSTYLE}
                         onChange={(e:React.ChangeEvent<HTMLInputElement>)=> 
                             setFormData((prev:any)=> {return {...prev, [e.target.name]: e.target.value}})}
                         placeholder="Name of organization which owns the copyright."
@@ -125,7 +124,7 @@ export const BasicFormView: React.FC<FormPageProps> = ({
                     <p className="pb-2"> Programming Language
                         <span className="text-red-500"> (required) </span></p>
                     <select 
-                        className={inputStyle}
+                        className={INPUTSTYLE}
                         name="language"
                         value={formData.language}
                     > 

@@ -1,6 +1,14 @@
+export interface FormOption {
+    name: string
+    type: "text" | "number"
+    displayName: string
+    required: boolean
+    category: string
+}
+
 export interface FormMenuInterface {
     name: string
-    component: React.FC<FormPageProps>
+    options: FormOption[]
 };
 
 export interface LicenseInterface {
@@ -13,6 +21,7 @@ export interface LanguageInterface {
 }
 
 export interface FormPageProps {
+    options: FormOption[]
     formData: Record<string, any>
     setFormData: React.Dispatch<React.SetStateAction<Record<string, any>>>
     errors: Record<string, any>

@@ -1,7 +1,5 @@
-import { FormMenuInterface } from "./interface"
-
 interface LeftFromMenuProps {
-    menu: FormMenuInterface[]
+    menu: string[]
     activeMenu: string
     setActiveMenu: React.Dispatch<React.SetStateAction<string>>
   };
@@ -10,12 +8,12 @@ export const LeftFormMenu: React.FC<LeftFromMenuProps> = ({ menu, activeMenu, se
 return (
     <div className="">
     {
-        menu.map((item: FormMenuInterface) => {
-        return <p key={item.name}
+        menu.map((item: string) => {
+        return <p key={item}
             className={`pb-5 hover:cursor-pointer hover:text-indigo-500 
-                    ${activeMenu === item.name ? "text-indigo-700 font-bold" : ""}`}
-            onClick={() => setActiveMenu(item.name)}
-        > {item.name}</p>
+                    ${activeMenu === item ? "text-indigo-700 font-bold" : ""}`}
+            onClick={() => setActiveMenu(item)}
+        > {item[0].toUpperCase() + item.slice(1)}</p>
         })
     }
     </div>
