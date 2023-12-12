@@ -263,7 +263,7 @@ const LanguageView: React.FC<LangugaeViewProps> = ({ languages, availLicenses, s
                                 {
                                     lang.licenses.map((lic: string) => {
                                         return (
-                                            <p className="bg-gray-200 px-2 rounded-md">
+                                            <p className="bg-gray-200 px-2 rounded-md" key={lic}>
                                                 {lic} <span className="text-red-500 pl-2 
                                             hover:text-red-800 hover:cursor-pointer 
                                             hover:font-bold"
@@ -412,7 +412,7 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
                                 {
                                     soft.licenses.map((lic: string) => {
                                         return (
-                                            <p className="bg-gray-200 px-2 rounded-md">
+                                            <p className="bg-gray-200 px-2 rounded-md" key={lic}>
                                                 {lic} <span className="text-red-500 pl-2 
                                             hover:text-red-800 hover:cursor-pointer 
                                             hover:font-bold"
@@ -446,7 +446,7 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
                                 {
                                     soft.organizations.map((org: string) => {
                                         return (
-                                            <p className="bg-gray-200 px-2 rounded-md">
+                                            <p className="bg-gray-200 px-2 rounded-md" key={org}>
                                                 {org} <span className="text-red-500 pl-2 
                                             hover:text-red-800 hover:cursor-pointer 
                                             hover:font-bold"
@@ -480,7 +480,7 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
                                 {
                                     soft.languages.map((lang: string) => {
                                         return (
-                                            <p className="bg-gray-200 px-2 rounded-md">
+                                            <p className="bg-gray-200 px-2 rounded-md" key={lang}>
                                                 {lang} <span className="text-red-500 pl-2 
                                             hover:text-red-800 hover:cursor-pointer 
                                             hover:font-bold"
@@ -513,7 +513,7 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
                                 {
                                     soft.categories.map((cat: string) => {
                                         return (
-                                            <p className="bg-gray-200 px-2 rounded-md">
+                                            <p className="bg-gray-200 px-2 rounded-md" key={cat}>
                                                 {cat} <span className="text-red-500 pl-2 
                                             hover:text-red-800 hover:cursor-pointer 
                                             hover:font-bold"
@@ -574,19 +574,19 @@ const HomePage: React.FC = () => {
         ).then(
             data => {
                 if (data.licenses) {
-                    setAvailLicenses(data.licenses.map(x => x.name))
+                    setAvailLicenses(data.licenses.map((x:License) => x.name))
                 }
                 if (data.organizations) {
-                    setAvailOrgs(data.organizations.map(x => x.name))
+                    setAvailOrgs(data.organizations.map((x:Organization) => x.name))
                 }
                 if (data.categories) {
-                    setAvailCategories(data.categories.map(x => x.name))
+                    setAvailCategories(data.categories.map((x:any) => x.name))
                 }
                 if (data.languages) {
-                    setAvailLangs(data.languages.map(x => x.name))
+                    setAvailLangs(data.languages.map((x:Language) => x.name))
                 }
                 if (data.software) {
-                    setAvailSoftware(data.software.map(x => x.name))
+                    setAvailSoftware(data.software.map((x:Software) => x.name))
                 }
             }
         ).catch(error => console.log(error))
@@ -632,25 +632,25 @@ const HomePage: React.FC = () => {
                                     {
                                         item === 'Software' && software.map((soft: Software) => {
                                             return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max"> {soft.id} : {soft.name} </p>
+                                            bg-gray-200 px-2 w-max" key={soft.id}> {soft.id} : {soft.name} </p>
                                         })
                                     }
                                     {
                                         item === 'License' && licenses.map((lic: License) => {
                                             return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max">{lic.id} : {lic.name} </p>
+                                            bg-gray-200 px-2 w-max" key={lic.id}>{lic.id} : {lic.name} </p>
                                         })
                                     }
                                     {
                                         item === 'Organization' && organizations.map((org: Organization) => {
                                             return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max"> {org.id} : {org.name} </p>
+                                            bg-gray-200 px-2 w-max" key={org.id}> {org.id} : {org.name} </p>
                                         })
                                     }
                                     {
                                         item === 'Language' && languages.map((lang: Language) => {
                                             return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max"> {lang.id} : {lang.name} </p>
+                                            bg-gray-200 px-2 w-max" key={lang.id}> {lang.id} : {lang.name} </p>
                                         })
                                     }
                                 </div>
