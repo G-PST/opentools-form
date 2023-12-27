@@ -4,6 +4,11 @@ import { INPUTSTYLE } from "./constants";
 import generate from "shortid";
 import { HeroSection } from "./hero-section";
 import { downloadJSON } from "./utility";
+import { GrLicense } from "react-icons/gr";
+import { GoOrganization } from "react-icons/go";
+import { IoLanguage } from "react-icons/io5";
+import { IoCodeSlash } from "react-icons/io5";
+import { IconType } from "react-icons";
 
 interface License {
     id: string;
@@ -57,18 +62,7 @@ interface LicenseViewProps {
 }
 
 const LicenseView: React.FC<LicenseViewProps> = ({ licenses, setLicenses }) => {
-    return (<><div>
-
-        <button className="bg-gray-300 px-3 py-1 rounded-md"
-            onClick={() => setLicenses((currentLicense: License[]) => [...currentLicense,
-            { name: '', id: generate() }
-            ])}
-        > <span className="text-xl"> + </span>Add License </button>
-        <p className="my-5"> Add license if not already present. Note once you add license it will
-            also be available to add  when creating new language and software.
-        </p>
-    </div>
-
+    return (<>
         {
             licenses.map((license: License) => {
                 return <div key={license.id} className="mb-3 bg-gray-100 p-5 shadow-md relative">
@@ -103,16 +97,6 @@ interface OrganizationViewProps {
 const OrganizationView: React.FC<OrganizationViewProps> = ({ organizations, setOrganizations }) => {
     return (
         <>
-            <div>
-                <button className="bg-gray-300 px-3 py-1 rounded-md mt-5"
-                    onClick={() => setOrganizations((currentOrganization) => [...currentOrganization,
-                    { name: '', id: generate(), description: '', url: '' }
-                    ])}
-                > <span className="text-xl"> + </span>Add Organization </button>
-                <p className="my-5"> Add organization if not already present. Note once you add organization
-                    it will also be available to add  when creating new software.
-                </p>
-            </div>
             {
                 organizations.map((org: Organization) => {
                     return (<div key={org.id} className="mb-3 bg-gray-100 p-5 shadow-md relative 
@@ -183,16 +167,6 @@ interface LangugaeViewProps {
 const LanguageView: React.FC<LangugaeViewProps> = ({ languages, availLicenses, setLanguages }) => {
     return (
         <>
-            <div>
-                <button className="bg-gray-300 px-3 py-1 rounded-md mt-5"
-                    onClick={() => setLanguages((currentLang) => [...currentLang,
-                    { name: '', id: generate(), description: '', licenses: [], url: '' }
-                    ])}
-                > <span className="text-xl"> + </span> Add Language </button>
-                <p className="my-5"> Add language if not already present. Note once you add language
-                    it will also be available to add when creating new software.
-                </p>
-            </div>
             {
                 languages.map((lang: Language) => {
                     return <div key={lang.id} className="mb-3 bg-gray-100 p-5 shadow-md relative 
@@ -286,6 +260,34 @@ const LanguageView: React.FC<LangugaeViewProps> = ({ languages, availLicenses, s
     )
 }
 
+interface LeftSubMenuItemProps {
+    name: string
+    itemId: string
+    activeId: string | null
+    activeMenu: string
+    itemMenu: string
+    setActiveMenu: React.Dispatch<React.SetStateAction<string>>
+    setActiveId: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+const LeftSubMenuItem: React.FC<LeftSubMenuItemProps> = ({
+    name, itemId, activeId, activeMenu, itemMenu, setActiveMenu, setActiveId
+}) => {
+    return (
+        <p
+            className={`pb-1 mb-2 hover:cursor-pointer 
+                        hover:font-bold text-gray-500 px-2 w-max
+                ${(activeId === itemId && activeMenu === itemMenu) &&
+                ' text-orange-600 underline'}`}
+            key={itemId}
+            onClick={() => {
+                setActiveMenu(itemMenu)
+                setActiveId(itemId)
+            }}
+        >  {name} (id:{itemId}) </p>
+    )
+}
+
 interface SoftwareViewProps {
     software: Software[];
     setSoftware: React.Dispatch<React.SetStateAction<Software[]>>;
@@ -300,7 +302,7 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
 }) => {
     return (
         <>
-            <div>
+            {/* <div>
                 <button className="bg-gray-300 px-3 py-1 rounded-md mt-5"
                     onClick={() => setSoftware((currentSoftware) => [...currentSoftware,
                     {
@@ -311,7 +313,7 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
                 > <span className="text-xl"> + </span>Add Software </button>
                 <p className="my-5"> Add software tool if not already present.
                 </p>
-            </div>
+            </div> */}
 
             {
                 software.map(soft => {
@@ -534,6 +536,56 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
     )
 }
 
+const getNewLicense = (id_: string) => {
+    return {id: id_, }
+}
+
+const getNewSoftware = (id_: string) => {
+    return {
+        name: '', id: id_, description: '', url_docs: '', 
+        url_sourcecode: '', url_website: '',
+        licenses: [], organizations: [], 
+        languages: [], categories: []
+    }
+}
+
+const getNewOrganization = (id_: string) => {
+    return { name: '', id: id_, description: '', url: '' }
+}
+
+const getNewLanguage = (id_: string) => {
+    return { name: '', id: id_, description: '', licenses: [], url: '' }
+}
+
+interface entityMappingModel {
+    menuName: string;
+    items: (Software | License | Organization | Language)[];
+    updateFunc: React.Dispatch<React.SetStateAction<any[]>>
+    getNew: (id_: string) => Record<any,any>
+}
+
+interface EmptyViewProps {
+    name: string;
+    reactIcon: IconType;
+}
+
+const EmptyView: React.FC<EmptyViewProps> = ({
+    name, reactIcon
+}) => {
+    const IconComponent  = reactIcon;
+    return (
+        <div className="w-full h-full flex flex-col justify-center items-center">
+            <div className="w-60 h-60 rounded-full bg-gray-200 flex 
+            justify-center items-center">
+                <IconComponent size={100} className="text-gray-500"/>
+            </div>
+            <p className="my-10 text-gray-400
+                px-5 py-1 rounded-md"> No {name} have been added. First add your license by 
+                clicking add new on left pane. </p>
+            </div>
+    )
+}
+
 const HomePage: React.FC = () => {
 
     const [licenses, setLicenses] = useState<License[]>([{
@@ -555,12 +607,46 @@ const HomePage: React.FC = () => {
             url_sourcecode: "https://github.com/nrel/emerge", url_docs: "https://nrel.github.io/emerge"
         }
     ])
+
+    const entityMapping: entityMappingModel[] = [
+        {
+            menuName: 'Software',
+            items: software,
+            updateFunc: setSoftware,
+            getNew: getNewSoftware
+        },
+        {
+            menuName: 'License',
+            items: licenses,
+            updateFunc: setLicenses,
+            getNew: getNewLicense
+        },
+        {
+            menuName: 'Organization',
+            items: organizations,
+            updateFunc: setOrganizations,
+            getNew: getNewOrganization
+        },
+        {
+            menuName: 'Language',
+            items: languages,
+            updateFunc: setLanguages,
+            getNew: getNewLanguage
+        }
+    ];
+
     const [availLicenses, setAvailLicenses] = useState<string[]>([]);
     const [availLangs, setAvailLangs] = useState<string[]>([]);
     const [availCategories, setAvailCategories] = useState<string[]>([]);
     const [availOrgs, setAvailOrgs] = useState<string[]>([]);
     const [availSoftware, setAvailSoftware] = useState<string[]>([])
     const [activeMenu, setActiveMenu] = useState('Software');
+    const [activeId, setActiveId] = useState<null | string>(null)
+
+    const filteredLics = !activeId ? licenses : licenses.filter((lic: License) => lic.id == activeId)
+    const filteredOrgs = !activeId ? organizations : organizations.filter((org: Organization) => org.id == activeId)
+    const filteredSoft = !activeId ? software :software.filter((soft: Software) => soft.id == activeId)
+    const filteredLangs = !activeId ? languages : languages.filter((lang: Language) => lang.id == activeId)
 
 
     useEffect(() => {
@@ -574,19 +660,19 @@ const HomePage: React.FC = () => {
         ).then(
             data => {
                 if (data.licenses) {
-                    setAvailLicenses(data.licenses.map((x:License) => x.name))
+                    setAvailLicenses(data.licenses.map((x: License) => x.name))
                 }
                 if (data.organizations) {
-                    setAvailOrgs(data.organizations.map((x:Organization) => x.name))
+                    setAvailOrgs(data.organizations.map((x: Organization) => x.name))
                 }
                 if (data.categories) {
-                    setAvailCategories(data.categories.map((x:any) => x.name))
+                    setAvailCategories(data.categories.map((x: any) => x.name))
                 }
                 if (data.languages) {
-                    setAvailLangs(data.languages.map((x:Language) => x.name))
+                    setAvailLangs(data.languages.map((x: Language) => x.name))
                 }
                 if (data.software) {
-                    setAvailSoftware(data.software.map((x:Software) => x.name))
+                    setAvailSoftware(data.software.map((x: Software) => x.name))
                 }
             }
         ).catch(error => console.log(error))
@@ -614,43 +700,40 @@ const HomePage: React.FC = () => {
             <div className="flex justify-between gap-x-10 h-[calc(100vh-280px)]">
                 <div className="w-1/5 bg-gray-100 shadow-md px-2 py-3 overflow-y-auto overflow">
                     {
-                        ["Software", "License", "Organization", "Language"].map((item: string) => {
+                        entityMapping.map((entity) => {
                             return <>
                                 <div className="flex gap-x-3 my-5 mx-5">
                                     <p className={`hover:cursor-pointer 
                                 rounded-md font-bold hover:text-blue-500
-                                    ${activeMenu === item ? ' text-blue-500 font-bold' : ''}`}
-                                        onClick={() => setActiveMenu(item)}
+                                    ${activeMenu === entity.menuName ? ' text-orange-500 font-bold' : ''}`}
+                                        onClick={() => {
+                                            setActiveMenu(entity.menuName)
+                                            setActiveId(null)
+                                        }}
                                     >
-                                        {item}
+                                        {entity.menuName}
                                     </p>
                                     <p className="border border-dashed border-2 border-blue-500 px-1 rounded-md text-sm flex 
                                         items-center hover:cursor-pointer hover:bg-blue-500 
-                                        hover:text-white"> + Create </p>
+                                        hover:text-white"
+                                        onClick={() => {
+                                            const randId = generate()
+                                            setActiveMenu(entity.menuName)
+                                            setActiveId(randId)
+                                            entity.updateFunc((currentVal) => [...currentVal, 
+                                                entity.getNew(randId)])
+                                        }}
+                                    > + Add New </p>
                                 </div>
+
                                 <div className="pl-10">
                                     {
-                                        item === 'Software' && software.map((soft: Software) => {
-                                            return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max" key={soft.id}> {soft.id} : {soft.name} </p>
-                                        })
-                                    }
-                                    {
-                                        item === 'License' && licenses.map((lic: License) => {
-                                            return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max" key={lic.id}>{lic.id} : {lic.name} </p>
-                                        })
-                                    }
-                                    {
-                                        item === 'Organization' && organizations.map((org: Organization) => {
-                                            return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max" key={org.id}> {org.id} : {org.name} </p>
-                                        })
-                                    }
-                                    {
-                                        item === 'Language' && languages.map((lang: Language) => {
-                                            return <p className="pb-1 mb-2 border-l-2 border-blue-500 
-                                            bg-gray-200 px-2 w-max" key={lang.id}> {lang.id} : {lang.name} </p>
+                                        entity.items.map((subitem) => {
+                                            return (
+                                                <LeftSubMenuItem name={subitem.name} itemId={subitem.id}
+                                                    activeId={activeId} activeMenu={activeMenu} itemMenu={entity.menuName}
+                                                    setActiveId={setActiveId} setActiveMenu={setActiveMenu} />
+                                            )
                                         })
                                     }
                                 </div>
@@ -659,31 +742,47 @@ const HomePage: React.FC = () => {
                         })
                     }
                 </div>
-                <div className="w-4/5 overflow-y-scroll">
+                <div className="w-4/5 overflow-y-auto">
                     {activeMenu === 'License' && <LicenseView
-                        licenses={licenses}
+                        licenses={filteredLics}
                         setLicenses={setLicenses}
                     />}
+                  
+                    {activeMenu === 'License' && filteredLics.length == 0 && 
+                        <EmptyView name="license" reactIcon={GrLicense} />
+                       }
 
                     {activeMenu === 'Organization' && <OrganizationView
-                        organizations={organizations}
+                        organizations={filteredOrgs}
                         setOrganizations={setOrganizations}
                     />}
 
+                      
+                    {activeMenu === 'Organization' && filteredOrgs.length == 0 && 
+                        <EmptyView name="organization" reactIcon={GoOrganization} />
+                    }
+
                     {activeMenu === 'Language' && <LanguageView
-                        languages={languages}
+                        languages={filteredLangs}
                         setLanguages={setLanguages}
                         availLicenses={[...getLicenses(licenses), ...availLicenses]}
                     />}
 
+                    {activeMenu === 'Language' && filteredLangs.length == 0 && 
+                        <EmptyView name="language" reactIcon={IoLanguage} />
+                    }
+
                     {activeMenu === "Software" && <SoftwareView
-                        software={software}
+                        software={filteredSoft}
                         setSoftware={setSoftware}
                         availCategories={availCategories}
                         availLangs={[...getLanguages(languages), ...availLangs]}
                         availLicenses={[...getLicenses(licenses), ...availLicenses]}
                         availOrgs={[...getOrganizations(organizations), ...availOrgs]}
                     />}
+                    {activeMenu === 'Software' && filteredSoft.length == 0 && 
+                        <EmptyView name="software" reactIcon={IoCodeSlash} />
+                    }
                 </div>
             </div>
         </>
