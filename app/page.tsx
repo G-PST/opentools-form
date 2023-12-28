@@ -9,6 +9,8 @@ import { GoOrganization } from "react-icons/go";
 import { IoLanguage } from "react-icons/io5";
 import { IoCodeSlash } from "react-icons/io5";
 import { IconType } from "react-icons";
+import { text } from "stream/consumers";
+import { StringLiteral } from "typescript";
 
 interface License {
     id: string;
@@ -55,6 +57,39 @@ const getLanguages = (langs: Language[]) => {
     return langs.map((lang: Language) => lang.name)
 }
 
+const InputLabelView: React.FC<{ text: string }> = ({
+    text
+}) => {
+    return <p className="pb-2"> {text} </p>
+}
+
+interface TagsViewProps {
+    tags: string[];
+    onDelete: (text: string) => void
+}
+
+const TagsView: React.FC<TagsViewProps> = ({
+    tags, onDelete
+}) => {
+    return (
+        <div className="flex gap-2 mt-2">
+            {
+                tags.map((tag: string) => {
+                    return (
+                        <p className="bg-gray-200 px-2 rounded-md" key={tag}>
+                            {tag} <span className="text-red-500 pl-2 
+                                            hover:text-red-800 hover:cursor-pointer 
+                                            hover:font-bold"
+                                onClick={() => onDelete(tag)}
+                            > x </span></p>
+                    )
+                })
+            }
+        </div>
+    )
+}
+
+
 interface SearchViewProps {
     searchTexts: string[];
     onAdd: (text: string) => void
@@ -83,7 +118,7 @@ const SearchView: React.FC<SearchViewProps> = ({
                 {searchTexts.includes(searchVal) && <button className="bg-gray-500 p-1 
                 mx-1 rounded-md text-white w-[100px]
                 hover:cursor-pointer hover:bg-orange-500 disabled"
-                onClick={()=> onAdd(searchVal)}
+                    onClick={() => onAdd(searchVal)}
                 > + add </button>}
             </div>
             <span className="absolute top-1.5 left-2 
@@ -275,31 +310,23 @@ const LanguageView: React.FC<LangugaeViewProps> = ({ languages, availLicenses, s
                         </div>
                         <div>
                             <p className="pb-2"> Licenses </p>
-                            <SearchView 
+                            <SearchView
                                 searchTexts={availLicenses}
-                                onAdd={(text:string)=> {
+                                onAdd={(text: string) => {
                                     setLanguages(currentLang => currentLang.map((x: Language) => x.id === lang.id ?
                                         { ...x, licenses: x.licenses.includes(text) ? x.licenses : [...x.licenses, text] } : x))
                                 }}
                             />
-                            
-                            <div className="flex gap-2 mt-2">
-                                {
-                                    lang.licenses.map((lic: string) => {
-                                        return (
-                                            <p className="bg-gray-200 px-2 rounded-md" key={lic}>
-                                                {lic} <span className="text-red-500 pl-2 
-                                            hover:text-red-800 hover:cursor-pointer 
-                                            hover:font-bold"
-                                                    onClick={() => setLanguages(currentLang => currentLang.map(
-                                                        (x) => x.id === lang.id ?
-                                                            { ...x, licenses: x.licenses.filter((l) => l !== lic) } : x
-                                                    ))}
-                                                > x </span></p>
-                                        )
-                                    })
-                                }
-                            </div>
+
+                            <TagsView
+                                tags={lang.licenses}
+                                onDelete={(text: string) => {
+                                    setLanguages(currentLang => currentLang.map(
+                                        (x) => x.id === lang.id ?
+                                            { ...x, licenses: x.licenses.filter((l) => l !== text) } : x
+                                    ))
+                                }}
+                            />
 
                         </div>
                     </div>
@@ -338,6 +365,74 @@ const LeftSubMenuItem: React.FC<LeftSubMenuItemProps> = ({
     )
 }
 
+
+interface SearchableFieldViewProps {
+    fieldName: string;
+    availTags: string[];
+    attachedTags: string[];
+    onAdd: (text: string) => void;
+    onDelete: (text: string) => void;
+}
+
+const SearchableFieldView: React.FC<SearchableFieldViewProps> = ({
+    fieldName,
+    availTags,
+    attachedTags,
+    onAdd,
+    onDelete
+}) => {
+    return (
+        <div>
+            <InputLabelView text={fieldName} />
+            <SearchView
+                searchTexts={availTags}
+                onAdd={onAdd}
+            />
+
+            <TagsView
+                tags={attachedTags}
+                onDelete={onDelete}
+            />
+        </div>
+
+    )
+}
+
+interface FormFieldViewProps {
+    fieldName: string;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder: string;
+}
+
+const FormFieldView: React.FC<FormFieldViewProps> = ({
+    fieldName, value, onChange, placeholder
+}) => {
+    return (
+        <div>
+            <InputLabelView text={fieldName} />
+            <input
+                className={INPUTSTYLE}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={placeholder}
+            />
+        </div>
+    )
+}
+
+const DeleteEntityView: React.FC<{onDelete: ()=> void}> = ({
+    onDelete
+}) => {
+    return (
+        <p className="absolute right-10 top-3 h-8 w-8 bg-blue-500 rounded-full 
+        flex items-center justify-center hover:bg-red-500 
+        text-white hover:cursor-pointer"
+        onClick={() => onDelete()}
+    > x </p>
+    )
+}
+
 interface SoftwareViewProps {
     software: Software[];
     setSoftware: React.Dispatch<React.SetStateAction<Software[]>>;
@@ -347,9 +442,118 @@ interface SoftwareViewProps {
     availLangs: string[];
 }
 
+type SoftwareSearchAttrs = ('licenses' | 'categories' | 'languages' | 'organizations');
+interface SoftSearchFieldModel {
+    fieldName: string;
+    availableTags: string[];
+    attrName: SoftwareSearchAttrs
+};
+
+
+type NonSoftwareSearchAttrs = ('name' | 'id' | 'description' | 'url_website' | 'url_sourcecode' | 'url_docs');
+interface NonSoftSearchFieldModel {
+    displayName: string;
+    placeHolderName: string;
+    attrName: NonSoftwareSearchAttrs
+};
+
 const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
     availLicenses, availCategories, availOrgs, availLangs
 }) => {
+
+    const onTagDelete = (
+        text: string,
+        id_: string,
+        property_: SoftwareSearchAttrs
+    ) => {
+        setSoftware(currentSoft => currentSoft.map(
+            (x) => x.id === id_ ?
+                { ...x, [property_]: x[property_].filter((l) => l !== text) } : x
+        ))
+    };
+
+    const onTagAdd = (
+        text: string,
+        id_: string,
+        property_: SoftwareSearchAttrs
+    ) => {
+        setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === id_ ?
+            { ...x, [property_]: x[property_].includes(text) ? x[property_] : [...x[property_], text] } : x))
+    };
+
+    const deleteSoft = (
+        id_: string
+    ) => {
+        setSoftware(currentSoft => currentSoft.filter((x: Software) => x.id !== id_))
+    };
+
+    const onValueChange = (
+        text: string,
+        id_: string,
+        property_: NonSoftwareSearchAttrs
+    ) => {
+        setSoftware((currentSoft) => currentSoft.map(
+            (x: Software) => x.id === id_ ? { ...x, [property_]: text } : x
+        ))
+    }
+
+    const nonSearchableFields: NonSoftSearchFieldModel[] = [
+        {
+            displayName: "Unique ID",
+            placeHolderName: "Enter unique identifier.",
+            attrName: "id"
+        },
+        {
+            displayName: "Software Name",
+            placeHolderName: "Enter software name",
+            attrName: "name"
+        },
+        {
+            displayName: "Software Description",
+            placeHolderName: "Enter software description.",
+            attrName: "description"
+        },
+        {
+            displayName: "Website URL",
+            placeHolderName: "Enter url of the website for software.",
+            attrName: "url_website"
+        },
+        {
+            displayName: "Sourcecode URL",
+            placeHolderName: "Enter url for software codebase.",
+            attrName: "url_sourcecode"
+        },
+        {
+            displayName: "Docs URL",
+            placeHolderName: "Enter url for software documentation.",
+            attrName: "url_docs"
+        }
+    ];
+
+    const searchableFields: SoftSearchFieldModel[] = [
+        {
+            fieldName: "Licenses",
+            availableTags: availLicenses,
+            attrName: "licenses"
+        },
+        {
+            fieldName: "Organizations",
+            availableTags: availOrgs,
+            attrName: "organizations"
+        },
+        {
+            fieldName: "Languages",
+            availableTags: availLangs,
+            attrName: "languages"
+        },
+        {
+            fieldName: "Categories",
+            availableTags: availCategories,
+            attrName: "categories"
+        }
+    ]
+
+
     return (
         <>
 
@@ -357,200 +561,35 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
                 software.map(soft => {
                     return <div key={soft.id} className="mb-3 bg-gray-100 p-5 shadow-md relative 
                     grid grid-cols-2 gap-5">
-                        <p className="absolute right-10 top-3 h-8 w-8 bg-blue-500 rounded-full 
-                            flex items-center justify-center hover:bg-red-500 
-                            text-white hover:cursor-pointer"
-                            onClick={() => setSoftware(currentSoft =>
-                                currentSoft.filter((x: Software) => x.id !== soft.id))}
-                        > x </p>
-                        <div>
-                            <p className="pb-2"> Software Name </p>
-                            <input
-                                className={INPUTSTYLE}
-                                value={soft.name}
-                                onChange={(e) => {
-                                    const name = e.target.value;
-                                    setSoftware((currentSoft) => currentSoft.map(
-                                        (x: Software) => x.id === soft.id ? { ...x, name } : x
-                                    ))
-                                }}
-                                placeholder="Enter software name. "
-                            />
-                        </div>
-                        <div>
-                            <p className="pb-2"> Software Description </p>
-                            <input
-                                className={INPUTSTYLE}
-                                value={soft.description}
-                                onChange={(e) => {
-                                    const description = e.target.value;
-                                    setSoftware((currentSoft) => currentSoft.map(
-                                        (x: Software) => x.id === soft.id ? { ...x, description } : x
-                                    ))
-                                }}
-                                placeholder="Enter software description. "
-                            />
-                        </div>
-                        <div>
-                            <p className="pb-2"> Website URL </p>
-                            <input
-                                className={INPUTSTYLE}
-                                value={soft.url_website}
-                                onChange={(e) => {
-                                    const url_website = e.target.value;
-                                    setSoftware((currentSoft) => currentSoft.map(
-                                        (x: Software) => x.id === soft.id ? { ...x, url_website } : x
-                                    ))
-                                }}
-                                placeholder="Enter url of the website for software. "
-                            />
-                        </div>
-                        <div>
-                            <p className="pb-2"> Sourcecode URL </p>
-                            <input
-                                className={INPUTSTYLE}
-                                value={soft.url_sourcecode}
-                                onChange={(e) => {
-                                    const url_sourcecode = e.target.value;
-                                    setSoftware((currentSoft) => currentSoft.map(
-                                        (x: Software) => x.id === soft.id ? { ...x, url_sourcecode } : x
-                                    ))
-                                }}
-                                placeholder="Enter url for software documentation. "
-                            />
-                        </div>
-                        <div>
-                            <p className="pb-2"> Docs URL </p>
-                            <input
-                                className={INPUTSTYLE}
-                                value={soft.url_docs}
-                                onChange={(e) => {
-                                    const url_docs = e.target.value;
-                                    setSoftware((currentSoft) => currentSoft.map(
-                                        (x: Software) => x.id === soft.id ? { ...x, url_docs } : x
-                                    ))
-                                }}
-                                placeholder="Enter url for software documentation. "
-                            />
-                        </div>
+                        <DeleteEntityView onDelete={()=> deleteSoft(soft.id)}/>
+                        {
+                            nonSearchableFields.map((field: NonSoftSearchFieldModel) => {
+                                return (
+                                    <FormFieldView
+                                        key={field.displayName}
+                                        fieldName={field.displayName}
+                                        placeholder={field.placeHolderName}
+                                        value={soft[field.attrName]}
+                                        onChange={(text: string) => onValueChange(text, soft.id, field.attrName)}
+                                    />
+                                )
+                            })
+                        }
+                        {
+                            searchableFields.map((field: SoftSearchFieldModel) => {
+                                return (
+                                    <SearchableFieldView
+                                        key={field.fieldName}
+                                        fieldName={field.fieldName}
+                                        availTags={field.availableTags}
+                                        attachedTags={soft[field.attrName]}
+                                        onAdd={(text: string) => onTagAdd(text, soft.id, field.attrName)}
+                                        onDelete={(text: string) => onTagDelete(text, soft.id, field.attrName)}
+                                    />
+                                )
+                            })
+                        }
 
-                        <div>
-                            <p className="pb-2"> Licenses </p>
-                            <SearchView 
-                                searchTexts={availLicenses}
-                                onAdd={(text:string)=> {
-                                    setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                        { ...x, licenses: x.licenses.includes(text) ? x.licenses : [...x.licenses, text] } : x))
-                                }}
-                            />
-                         
-                            <div className="flex gap-2 mt-2">
-                                {
-                                    soft.licenses.map((lic: string) => {
-                                        return (
-                                            <p className="bg-gray-200 px-2 rounded-md" key={lic}>
-                                                {lic} <span className="text-red-500 pl-2 
-                                            hover:text-red-800 hover:cursor-pointer 
-                                            hover:font-bold"
-                                                    onClick={() => setSoftware(currentSoft => currentSoft.map(
-                                                        (x) => x.id === soft.id ?
-                                                            { ...x, licenses: x.licenses.filter((l) => l !== lic) } : x
-                                                    ))}
-                                                > x </span></p>
-                                        )
-                                    })
-                                }
-                            </div>
-
-                        </div>
-
-                        <div>
-                            <p className="pb-2"> Organizations </p>
-                            <SearchView 
-                                searchTexts={availOrgs}
-                                onAdd={(text: string)=> {
-                                    setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                        { ...x, organizations: x.organizations.includes(text) ? x.organizations : [...x.organizations, text] } : x))
-                                }}
-                            />
-
-                            
-                            <div className="flex gap-2 mt-2">
-                                {
-                                    soft.organizations.map((org: string) => {
-                                        return (
-                                            <p className="bg-gray-200 px-2 rounded-md" key={org}>
-                                                {org} <span className="text-red-500 pl-2 
-                                            hover:text-red-800 hover:cursor-pointer 
-                                            hover:font-bold"
-                                                    onClick={() => setSoftware(currentSoft => currentSoft.map(
-                                                        (x) => x.id === soft.id ?
-                                                            { ...x, organizations: x.organizations.filter((l) => l !== org) } : x
-                                                    ))}
-                                                > x </span></p>
-                                        )
-                                    })
-                                }
-                            </div>
-
-                        </div>
-
-                        <div>
-                            <p className="pb-2"> Languages </p>
-                            <SearchView 
-                                searchTexts={availLangs}
-                                onAdd={(text:string)=> {
-                                    setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                        { ...x, languages: x.languages.includes(text) ? x.languages : [...x.languages, text] } : x))
-                                }}
-                            />
-                
-                            <div className="flex gap-2 mt-2">
-                                {
-                                    soft.languages.map((lang: string) => {
-                                        return (
-                                            <p className="bg-gray-200 px-2 rounded-md" key={lang}>
-                                                {lang} <span className="text-red-500 pl-2 
-                                            hover:text-red-800 hover:cursor-pointer 
-                                            hover:font-bold"
-                                                    onClick={() => setSoftware(currentSoft => currentSoft.map(
-                                                        (x) => x.id === soft.id ?
-                                                            { ...x, languages: x.languages.filter((l) => l !== lang) } : x
-                                                    ))}
-                                                > x </span></p>
-                                        )
-                                    })
-                                }
-                            </div>
-
-                        </div>
-                        <div>
-                            <p className="pb-2"> Categories </p>
-                            
-                            <SearchView searchTexts={availCategories} onAdd={(text:string)=> {
-                                    setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                    { ...x, categories: x.categories.includes(text) ? x.categories : [...x.categories, text] } : x))
-                            }} />
-                            
-                            <div className="flex gap-2 mt-2">
-                                {
-                                    soft.categories.map((cat: string) => {
-                                        return (
-                                            <p className="bg-gray-200 px-2 rounded-md" key={cat}>
-                                                {cat} <span className="text-red-500 pl-2 
-                                            hover:text-red-800 hover:cursor-pointer 
-                                            hover:font-bold"
-                                                    onClick={() => setSoftware(currentSoft => currentSoft.map(
-                                                        (x) => x.id === soft.id ?
-                                                            { ...x, categories: x.categories.filter((c) => c !== cat) } : x
-                                                    ))}
-                                                > x </span></p>
-                                        )
-                                    })
-                                }
-                            </div>
-
-                        </div>
                     </div>
                 })}
         </>
@@ -609,25 +648,23 @@ const EmptyView: React.FC<EmptyViewProps> = ({
 
 const HomePage: React.FC = () => {
 
-    const [licenses, setLicenses] = useState<License[]>([{
-        id: "2", name: "BSD 3 Clause"
-    }]);
-    const [organizations, setOrganizations] = useState<Organization[]>([
-        { id: "3", name: "NREL", url: "www.nrel.gov", description: "Research Non Profit Org" }
-    ])
-    const [languages, setLanguages] = useState<Language[]>([
-        {
-            id: "4", name: "MATLAB", url: "https://matlab.org", description: "Matrix Laboratory",
-            licenses: ["MATLAB License", "GPL v3"]
-        }
-    ])
-    const [software, setSoftware] = useState<Software[]>([
-        {
-            id: "5", name: "emerge", description: "Modern tool for DER impact study.", categories: ["Hosting Capacity"],
-            languages: ["python", "javascript"], licenses: ["BSD 3 Clause"], organizations: ["NREL"], url_website: "",
-            url_sourcecode: "https://github.com/nrel/emerge", url_docs: "https://nrel.github.io/emerge"
-        }
-    ])
+    const [licenses, setLicenses] = useState<License[]>([]);
+    const [organizations, setOrganizations] = useState<Organization[]>([])
+    const [languages, setLanguages] = useState<Language[]>([])
+    const [software, setSoftware] = useState<Software[]>([])
+
+    const [availLicenses, setAvailLicenses] = useState<string[]>([]);
+    const [availLangs, setAvailLangs] = useState<string[]>([]);
+    const [availCategories, setAvailCategories] = useState<string[]>([]);
+    const [availOrgs, setAvailOrgs] = useState<string[]>([]);
+    const [availSoftware, setAvailSoftware] = useState<string[]>([])
+    const [activeMenu, setActiveMenu] = useState('Software');
+    const [activeId, setActiveId] = useState<null | string>(null)
+
+    const filteredLics = !activeId ? licenses : licenses.filter((lic: License) => lic.id == activeId)
+    const filteredOrgs = !activeId ? organizations : organizations.filter((org: Organization) => org.id == activeId)
+    const filteredSoft = !activeId ? software : software.filter((soft: Software) => soft.id == activeId)
+    const filteredLangs = !activeId ? languages : languages.filter((lang: Language) => lang.id == activeId)
 
     const entityMapping: entityMappingModel[] = [
         {
@@ -655,21 +692,7 @@ const HomePage: React.FC = () => {
             getNew: getNewLanguage
         }
     ];
-
-    const [availLicenses, setAvailLicenses] = useState<string[]>([]);
-    const [availLangs, setAvailLangs] = useState<string[]>([]);
-    const [availCategories, setAvailCategories] = useState<string[]>([]);
-    const [availOrgs, setAvailOrgs] = useState<string[]>([]);
-    const [availSoftware, setAvailSoftware] = useState<string[]>([])
-    const [activeMenu, setActiveMenu] = useState('Software');
-    const [activeId, setActiveId] = useState<null | string>(null)
-
-    const filteredLics = !activeId ? licenses : licenses.filter((lic: License) => lic.id == activeId)
-    const filteredOrgs = !activeId ? organizations : organizations.filter((org: Organization) => org.id == activeId)
-    const filteredSoft = !activeId ? software : software.filter((soft: Software) => soft.id == activeId)
-    const filteredLangs = !activeId ? languages : languages.filter((lang: Language) => lang.id == activeId)
-
-
+    
     useEffect(() => {
         fetch('https://opentools.globalpst.org/manifest.json').then(
             response => {
