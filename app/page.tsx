@@ -55,6 +55,61 @@ const getLanguages = (langs: Language[]) => {
     return langs.map((lang: Language) => lang.name)
 }
 
+interface SearchViewProps {
+    searchTexts: string[];
+    onAdd: (text: string) => void
+}
+
+const SearchView: React.FC<SearchViewProps> = ({
+    searchTexts, onAdd
+}) => {
+    const [searchVal, setSearchVal] = useState('');
+    const [showFilters, setShowFilters] = useState(false);
+    const filteredSearchTexts = searchTexts.filter((stext: string) =>
+        stext.toLowerCase().includes(searchVal.toLowerCase()))
+        .slice(0, 5);
+
+    return (<>
+        <div className="w-full relative">
+            <div className="flex">
+                <input
+                    className={`${INPUTSTYLE} pl-10`}
+                    value={searchVal}
+                    onChange={(e) => {
+                        setShowFilters(true)
+                        setSearchVal(e.target.value)
+                    }}
+                    onBlur={() => setShowFilters(false)}
+                    placeholder="Search for categories" />
+                {!showFilters && <button className="bg-gray-500 p-1 
+                mx-1 rounded-md text-white w-[100px]
+                hover:cursor-pointer hover:bg-orange-500 disabled"
+                onClick={()=> onAdd(searchVal)}
+                > + add </button>}
+            </div>
+            <span className="absolute top-1.5 left-2 
+            text-gray-600 cursor-pointer">&#128269;</span>
+
+            {showFilters && filteredSearchTexts.length > 0 && <div className="absolute top-0 left-0 w-full 
+            bg-white -translate-y-full shadow-md px-3 py-1">
+                {
+                    filteredSearchTexts.map((item: string) => {
+                        return <p className="hover:cursor-pointer 
+                        hover:text-blue-500"
+                            key={item}
+                            onClick={() => {
+                                setShowFilters(false)
+                                setSearchVal(item)
+                            }}
+                        > {item} </p>
+                    })
+                }
+            </div>}
+        </div>
+    </>
+    )
+}
+
 
 interface LicenseViewProps {
     licenses: License[];
@@ -221,18 +276,14 @@ const LanguageView: React.FC<LangugaeViewProps> = ({ languages, availLicenses, s
                         </div>
                         <div>
                             <p className="pb-2"> Licenses </p>
-                            <div className="flex">
-                                <select className={INPUTSTYLE} onChange={(e) => {
-                                    const licVal = e.target.value;
+                            <SearchView 
+                                searchTexts={availLicenses}
+                                onAdd={(text:string)=> {
                                     setLanguages(currentLang => currentLang.map((x: Language) => x.id === lang.id ?
-                                        { ...x, licenses: x.licenses.includes(licVal) ? x.licenses : [...x.licenses, licVal] } : x))
-                                }
-                                }>
-                                    {availLicenses.map((lic: string) => {
-                                        return <option value={lic} key={lic}> {lic}</option>
-                                    })}
-                                </select>
-                            </div>
+                                        { ...x, licenses: x.licenses.includes(text) ? x.licenses : [...x.licenses, text] } : x))
+                                }}
+                            />
+                            
                             <div className="flex gap-2 mt-2">
                                 {
                                     lang.licenses.map((lic: string) => {
@@ -302,18 +353,6 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
 }) => {
     return (
         <>
-            {/* <div>
-                <button className="bg-gray-300 px-3 py-1 rounded-md mt-5"
-                    onClick={() => setSoftware((currentSoftware) => [...currentSoftware,
-                    {
-                        name: '', id: generate(), description: '', url_docs: '', url_sourcecode: '', url_website: '',
-                        licenses: [], organizations: [], languages: [], categories: []
-                    }
-                    ])}
-                > <span className="text-xl"> + </span>Add Software </button>
-                <p className="my-5"> Add software tool if not already present.
-                </p>
-            </div> */}
 
             {
                 software.map(soft => {
@@ -398,18 +437,14 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
 
                         <div>
                             <p className="pb-2"> Licenses </p>
-                            <div className="flex">
-                                <select className={INPUTSTYLE} onChange={(e) => {
-                                    const licVal = e.target.value;
+                            <SearchView 
+                                searchTexts={availLicenses}
+                                onAdd={(text:string)=> {
                                     setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                        { ...x, licenses: x.licenses.includes(licVal) ? x.licenses : [...x.licenses, licVal] } : x))
-                                }
-                                }>
-                                    {availLicenses.map((lic: string) => {
-                                        return <option value={lic} key={lic}> {lic}</option>
-                                    })}
-                                </select>
-                            </div>
+                                        { ...x, licenses: x.licenses.includes(text) ? x.licenses : [...x.licenses, text] } : x))
+                                }}
+                            />
+                         
                             <div className="flex gap-2 mt-2">
                                 {
                                     soft.licenses.map((lic: string) => {
@@ -432,18 +467,15 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
 
                         <div>
                             <p className="pb-2"> Organizations </p>
-                            <div className="flex">
-                                <select className={INPUTSTYLE} onChange={(e) => {
-                                    const orgVal = e.target.value;
+                            <SearchView 
+                                searchTexts={availOrgs}
+                                onAdd={(text: string)=> {
                                     setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                        { ...x, organizations: x.organizations.includes(orgVal) ? x.organizations : [...x.organizations, orgVal] } : x))
-                                }
-                                }>
-                                    {availOrgs.map((org: string) => {
-                                        return <option value={org} key={org}> {org}</option>
-                                    })}
-                                </select>
-                            </div>
+                                        { ...x, organizations: x.organizations.includes(text) ? x.organizations : [...x.organizations, text] } : x))
+                                }}
+                            />
+
+                            
                             <div className="flex gap-2 mt-2">
                                 {
                                     soft.organizations.map((org: string) => {
@@ -466,18 +498,14 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
 
                         <div>
                             <p className="pb-2"> Languages </p>
-                            <div className="flex">
-                                <select className={INPUTSTYLE} onChange={(e) => {
-                                    const langVal = e.target.value;
+                            <SearchView 
+                                searchTexts={availLangs}
+                                onAdd={(text:string)=> {
                                     setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                        { ...x, languages: x.languages.includes(langVal) ? x.languages : [...x.languages, langVal] } : x))
-                                }
-                                }>
-                                    {availLangs.map((lang: string) => {
-                                        return <option value={lang} key={lang}> {lang}</option>
-                                    })}
-                                </select>
-                            </div>
+                                        { ...x, languages: x.languages.includes(text) ? x.languages : [...x.languages, text] } : x))
+                                }}
+                            />
+                
                             <div className="flex gap-2 mt-2">
                                 {
                                     soft.languages.map((lang: string) => {
@@ -499,18 +527,12 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
                         </div>
                         <div>
                             <p className="pb-2"> Categories </p>
-                            <div className="flex">
-                                <select className={INPUTSTYLE} onChange={(e) => {
-                                    const catVal = e.target.value;
+                            
+                            <SearchView searchTexts={availCategories} onAdd={(text:string)=> {
                                     setSoftware(currentSoft => currentSoft.map((x: Software) => x.id === soft.id ?
-                                        { ...x, categories: x.categories.includes(catVal) ? x.categories : [...x.categories, catVal] } : x))
-                                }
-                                }>
-                                    {availCategories.map((cat: string) => {
-                                        return <option value={cat} key={cat}> {cat}</option>
-                                    })}
-                                </select>
-                            </div>
+                                    { ...x, categories: x.categories.includes(text) ? x.categories : [...x.categories, text] } : x))
+                            }} />
+                            
                             <div className="flex gap-2 mt-2">
                                 {
                                     soft.categories.map((cat: string) => {
@@ -537,14 +559,14 @@ const SoftwareView: React.FC<SoftwareViewProps> = ({ software, setSoftware,
 }
 
 const getNewLicense = (id_: string) => {
-    return {id: id_, }
+    return { id: id_, }
 }
 
 const getNewSoftware = (id_: string) => {
     return {
-        name: '', id: id_, description: '', url_docs: '', 
+        name: '', id: id_, description: '', url_docs: '',
         url_sourcecode: '', url_website: '',
-        licenses: [], organizations: [], 
+        licenses: [], organizations: [],
         languages: [], categories: []
     }
 }
@@ -561,7 +583,7 @@ interface entityMappingModel {
     menuName: string;
     items: (Software | License | Organization | Language)[];
     updateFunc: React.Dispatch<React.SetStateAction<any[]>>
-    getNew: (id_: string) => Record<any,any>
+    getNew: (id_: string) => Record<any, any>
 }
 
 interface EmptyViewProps {
@@ -572,17 +594,17 @@ interface EmptyViewProps {
 const EmptyView: React.FC<EmptyViewProps> = ({
     name, reactIcon
 }) => {
-    const IconComponent  = reactIcon;
+    const IconComponent = reactIcon;
     return (
         <div className="w-full h-full flex flex-col justify-center items-center">
             <div className="w-60 h-60 rounded-full bg-gray-200 flex 
             justify-center items-center">
-                <IconComponent size={100} className="text-gray-500"/>
+                <IconComponent size={100} className="text-gray-500" />
             </div>
             <p className="my-10 text-gray-400
-                px-5 py-1 rounded-md"> No {name} have been added. First add your license by 
+                px-5 py-1 rounded-md"> No {name} have been added. First add your license by
                 clicking add new on left pane. </p>
-            </div>
+        </div>
     )
 }
 
@@ -645,7 +667,7 @@ const HomePage: React.FC = () => {
 
     const filteredLics = !activeId ? licenses : licenses.filter((lic: License) => lic.id == activeId)
     const filteredOrgs = !activeId ? organizations : organizations.filter((org: Organization) => org.id == activeId)
-    const filteredSoft = !activeId ? software :software.filter((soft: Software) => soft.id == activeId)
+    const filteredSoft = !activeId ? software : software.filter((soft: Software) => soft.id == activeId)
     const filteredLangs = !activeId ? languages : languages.filter((lang: Language) => lang.id == activeId)
 
 
@@ -720,8 +742,8 @@ const HomePage: React.FC = () => {
                                             const randId = generate()
                                             setActiveMenu(entity.menuName)
                                             setActiveId(randId)
-                                            entity.updateFunc((currentVal) => [...currentVal, 
-                                                entity.getNew(randId)])
+                                            entity.updateFunc((currentVal) => [...currentVal,
+                                            entity.getNew(randId)])
                                         }}
                                     > + Add New </p>
                                 </div>
@@ -747,18 +769,18 @@ const HomePage: React.FC = () => {
                         licenses={filteredLics}
                         setLicenses={setLicenses}
                     />}
-                  
-                    {activeMenu === 'License' && filteredLics.length == 0 && 
+
+                    {activeMenu === 'License' && filteredLics.length == 0 &&
                         <EmptyView name="license" reactIcon={GrLicense} />
-                       }
+                    }
 
                     {activeMenu === 'Organization' && <OrganizationView
                         organizations={filteredOrgs}
                         setOrganizations={setOrganizations}
                     />}
 
-                      
-                    {activeMenu === 'Organization' && filteredOrgs.length == 0 && 
+
+                    {activeMenu === 'Organization' && filteredOrgs.length == 0 &&
                         <EmptyView name="organization" reactIcon={GoOrganization} />
                     }
 
@@ -768,7 +790,7 @@ const HomePage: React.FC = () => {
                         availLicenses={[...getLicenses(licenses), ...availLicenses]}
                     />}
 
-                    {activeMenu === 'Language' && filteredLangs.length == 0 && 
+                    {activeMenu === 'Language' && filteredLangs.length == 0 &&
                         <EmptyView name="language" reactIcon={IoLanguage} />
                     }
 
@@ -780,7 +802,7 @@ const HomePage: React.FC = () => {
                         availLicenses={[...getLicenses(licenses), ...availLicenses]}
                         availOrgs={[...getOrganizations(organizations), ...availOrgs]}
                     />}
-                    {activeMenu === 'Software' && filteredSoft.length == 0 && 
+                    {activeMenu === 'Software' && filteredSoft.length == 0 &&
                         <EmptyView name="software" reactIcon={IoCodeSlash} />
                     }
                 </div>
