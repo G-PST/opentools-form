@@ -79,9 +79,8 @@ const SearchView: React.FC<SearchViewProps> = ({
                         setShowFilters(true)
                         setSearchVal(e.target.value)
                     }}
-                    onBlur={() => setShowFilters(false)}
                     placeholder="Search for categories" />
-                {!showFilters && <button className="bg-gray-500 p-1 
+                {searchTexts.includes(searchVal) && <button className="bg-gray-500 p-1 
                 mx-1 rounded-md text-white w-[100px]
                 hover:cursor-pointer hover:bg-orange-500 disabled"
                 onClick={()=> onAdd(searchVal)}
