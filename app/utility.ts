@@ -38,3 +38,4 @@ export const downloadJSON = (jsonData: Record<string, any>, fileName: string) =>
     // Clean up by revoking the Blob URL
     URL.revokeObjectURL(blobUrl);
   }
+
