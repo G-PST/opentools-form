@@ -1,8 +1,8 @@
-import { FormOption } from "./interface"
+// import { FormOption } from "./interface"
 
-export const getKeyName = (item:FormOption) => {
-    return item.category + '__' + item.name
-}
+// export const getKeyName = (item:FormOption) => {
+//     return item.category + '__' + item.name
+// }
 
 export const validateInput = (data: any, schema: any, setErrorFunc: any) => {
     schema.validate(data, { abortEarly: false }).then(
@@ -38,3 +38,4 @@ export const downloadJSON = (jsonData: Record<string, any>, fileName: string) =>
     // Clean up by revoking the Blob URL
     URL.revokeObjectURL(blobUrl);
   }
+

@@ -1,0 +1,15 @@
+name: "G-PST Open Tools Portal Input Form Builder"
+description: "Builds the portal input form"
+author: "Kapil Duwadi and Gord Stephen"
+
+inputs:
+  formpath:
+    description: "Path to folder in which to generate form."
+    required: true
+  baseurl:
+    description: "URL prefix to be applied to links within the form."
+    required: true
+
+runs:
+  using: docker
+  image: "Dockerfile"
