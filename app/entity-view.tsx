@@ -76,6 +76,7 @@ export const EntityView: React.FC<EntityViewProps> = ({
                                     <SearchableFieldView
                                         key={field.fieldName}
                                         fieldName={field.fieldName}
+                                        error={getErrorString(errors, ent.id, field.attrName)}
                                         availTags={field.availableTags}
                                         attachedTags={(ent as any)[field.attrName]}
                                         onAdd={(text: string) => onTagAdd(text, ent.id, field.attrName)}

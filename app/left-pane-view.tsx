@@ -1,8 +1,10 @@
 import { generate } from "shortid";
 import { EntityType } from "./entity-interfaces";
+import { error } from "console";
 
 export interface entityMappingModel {
     menuName: string;
+    errors: Record<string, string>[];
     items: EntityType[];
     updateFunc: React.Dispatch<React.SetStateAction<any[]>>
     getNew: (id_: string) => Record<any, any>
@@ -10,13 +12,14 @@ export interface entityMappingModel {
 
 interface LeftSubMenuItemProps {
     name: string
+    numErr: number
     itemId: string
     highlight: boolean;
     onSubMenuClick: () => void;
 }
 
 const LeftSubMenuItem: React.FC<LeftSubMenuItemProps> = ({
-    name, itemId, highlight, onSubMenuClick
+    name, numErr, itemId, highlight, onSubMenuClick
 }) => {
     return (
         <p
@@ -26,7 +29,12 @@ const LeftSubMenuItem: React.FC<LeftSubMenuItemProps> = ({
                 ' text-orange-600 underline'}`}
             key={itemId}
             onClick={() => onSubMenuClick()}
-        >  {name} (id:{itemId}) </p>
+        >  {name} <span className="bg-gray-200 px-1 rounded-md">ID: {itemId} </span>
+            {
+                numErr> 0 && <span className="ml-2 bg-red-500 
+                rounded-full px-2 text-white"> {numErr} </span>
+            }
+        </p>
     )
 }
 
@@ -82,10 +90,18 @@ export const LeftPaneView: React.FC<LeftPaneViewProps> = ({
                         <div className="pl-10">
                             {
                                 entity.items.map((subitem) => {
+                                    const filteredErr = entity.errors.filter((err) => err.uuid == subitem.id)[0];
+                                    
                                     return (
                                         <LeftSubMenuItem
                                             name={subitem.name}
-                                            itemId={subitem.id}
+                                            numErr={filteredErr ? Object.entries(filteredErr).reduce((acc, [key, val]) => {
+                                                if (key != 'uuid' && val != null) {
+                                                    acc += 1
+                                                }
+                                                return acc
+                                            }, 0) : 0}
+                                            itemId={subitem.unique_name}
                                             highlight={activeId === subitem.id && activeMenu === entity.menuName}
                                             onSubMenuClick={() => handleSubMenuClick(entity.menuName, subitem.id)}
                                         />
