@@ -18,6 +18,7 @@ import {
 import { EmptyView } from "./empty-entity-view";
 import { LeftPaneView } from "./left-pane-view";
 import { EntityView } from "./entity-view";
+import { UploadJSONSection } from "./custom-upload";
 
 
 const DownloadJSONButtonView: React.FC<{ onDownload: () => void }> = ({
@@ -29,6 +30,16 @@ const DownloadJSONButtonView: React.FC<{ onDownload: () => void }> = ({
         > Download JSON </button>
     )
 }
+
+// const UploadJSONButtonView: React.FC<{ onUpload: () => void }> = ({
+//     onUpload
+// }) => {
+//     return (
+//         <button className="bg-indigo-500 px-2 text-white rounded py-1"
+//             onClick={() => onUpload()}
+//         > Upload JSON </button>
+//     )
+// }
 
 type EntityError = Record<string, string>;
 
@@ -54,10 +65,10 @@ const getValidatorObjs = (ents: Record<string, any>[], req_properties: string[])
     return newErrs;
 };
 
-const getValidatorUseEffects = (ents: EntityType[], 
+const getValidatorUseEffects = (ents: EntityType[],
     setErrorFunc: React.Dispatch<React.SetStateAction<EntityError[]>>,
     reqFields: string[]
-    ) => {
+) => {
     useEffect(() => {
         setErrorFunc(getValidatorObjs(ents, reqFields))
     }, [ents])
@@ -85,7 +96,7 @@ const getStates = () => {
     const organizationsState = useEntityState<Organization>([]);
     const languagesState = useEntityState<Language>([]);
     const softwareState = useEntityState<Software>([]);
-    
+
     const [availLicenses, setAvailLicenses] = useState<string[]>([]);
     const [availLangs, setAvailLangs] = useState<string[]>([]);
     const [availCategories, setAvailCategories] = useState<string[]>([]);
@@ -148,7 +159,7 @@ const getStates = () => {
             attrName: "categories"
         }
     ];
-    
+
     return {
         Licenses: {
             ...licensesState,
@@ -180,7 +191,7 @@ const getStates = () => {
             normalFields: SoftNormFields,
             searchFields: SoftwareSearchFields,
             icon: IoCodeSlash,
-            reqProps: ['name', 'unique_name', 'licenses', 'organizations','languages']
+            reqProps: ['name', 'unique_name', 'licenses', 'organizations', 'languages']
         }
     };
 }
@@ -191,7 +202,7 @@ const HomePage: React.FC = () => {
 
     // State for managing active menu and pages
     const [activeMenu, setActiveMenu] = useState(Object.keys(entityStates)[0]);
-    const [activeId, setActiveId] = useState<null | string>(null)
+    const [activeId, setActiveId] = useState<null | string>(null);
 
     const getFilteredStates = (menu: string) => {
         return (
@@ -219,10 +230,26 @@ const HomePage: React.FC = () => {
         downloadJSON(data, "data.json")
     };
 
+    const handleUploadJSON = (content: Record<any, any>) => {
+        if (content.licenses) {
+            entityStates.Licenses.setState(content.licenses)
+        }
+        if (content.organizations) {
+            entityStates.Organizations.setState(content.organizations)
+        }
+        if (content.languages) {
+            entityStates.Languages.setState(content.languages)
+        }
+        if (content.software) {
+            entityStates.Software.setState(content.software)
+        }
+    };
+
     const getEntityForLeftPane = () => {
-        return Object.entries(entityStates).reduce((acc, [key, val])=> {
+        return Object.entries(entityStates).reduce((acc, [key, val]) => {
             (acc as any).push({
                 menuName: key,
+                errors: val.error,
                 items: val.state,
                 updateFunc: val.setState,
                 getNew: val.getNew
@@ -230,10 +257,10 @@ const HomePage: React.FC = () => {
             return acc;
         }, [])
     };
-    
+
     const getCurrentView = (activeMenu_: string) => {
 
-        return entityStates.hasOwnProperty(activeMenu_) && 
+        return entityStates.hasOwnProperty(activeMenu_) &&
             getFilteredStates(activeMenu_).length > 0
             ? <EntityView
                 entities={getFilteredStates(activeMenu_)}
@@ -248,24 +275,41 @@ const HomePage: React.FC = () => {
 
     }
 
-    Object.entries(entityStates).map(([_, val])=> {
+    Object.entries(entityStates).map(([_, val]) => {
         getValidatorUseEffects(val.state, val.setError, val.reqProps)
     })
- 
+
+    const hasErrors = () => {
+        const hasErrVal = Object.entries(entityStates).reduce((acc, [key, val]) => {
+            acc += val.error.map((err:Record<string, string>) => Object.entries(err).reduce(
+                (acc_, [key_, val_]) => {
+                    if (key_ != 'uuid' && val_ != null){
+                        acc_ += 1
+                    }
+                    return acc_
+                }, 0
+            )).reduce((accumulator: number, currentVal: number) => { return accumulator + currentVal }, 0)
+            return acc
+        }, 0)
+        return hasErrVal == 0;
+    }
 
     return (
         <>
             <HeroSection />
 
-            <div className="flex justify-center my-3">
-                <DownloadJSONButtonView onDownload={handleDownloadJSON} />
-            </div>
+            {
+                hasErrors() && <div className="flex justify-center gap-x-10 my-3 items-center">
+                    <DownloadJSONButtonView onDownload={handleDownloadJSON} />
+                    <UploadJSONSection setFormData={handleUploadJSON} />
+                </div>
+            }
 
 
-            <div className="flex justify-between gap-x-10 h-[calc(100vh-280px)]">
+            <div className="flex flex-col gap-y-5 md:flex-row justify-between gap-x-10 h-[calc(100vh-280px)]">
 
-                <div className="w-1/5 bg-gray-100 shadow-md px-2 py-3 
-                    overflow-y-auto overflow">
+                <div className="w-full md:w-1/5 bg-gray-100 shadow-md px-2 py-3 
+                    md:overflow-y-auto overflow">
                     <LeftPaneView
                         entityMapping={getEntityForLeftPane()}
                         activeMenu={activeMenu}
@@ -275,7 +319,7 @@ const HomePage: React.FC = () => {
                     />
                 </div>
 
-                <div className="w-4/5 overflow-y-auto">
+                <div className="w-full md:w-4/5 md:overflow-y-auto">
                     {getCurrentView(activeMenu)}
                 </div>
             </div>
@@ -286,7 +330,7 @@ const HomePage: React.FC = () => {
 
 export default function Home() {
     return (
-        <main className="px-20 py-10 h-screen">
+        <main className="relative px-5 lg:px-20 py-10 h-screen">
             <HomePage />
         </main>
     )

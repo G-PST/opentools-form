@@ -46,14 +46,14 @@ export interface SearchFieldModel {
 
 export const LangNormFields: NormalFieldModel[] = [
     {
-        displayName: "Unique ID",
-        placeHolderName: "Enter unique identifier.",
-        attrName: "unique_name"
-    },
-    {
         displayName: "Language Name",
         placeHolderName: "Enter language name",
         attrName: "name"
+    },
+    {
+        displayName: "Unique ID",
+        placeHolderName: "Enter unique identifier.",
+        attrName: "unique_name"
     },
     {
         displayName: "Language Description",
@@ -69,14 +69,14 @@ export const LangNormFields: NormalFieldModel[] = [
 
 export const OrgNormFields: NormalFieldModel[] = [
     {
-        displayName: "Unique ID",
-        placeHolderName: "Enter unique identifier.",
-        attrName: "unique_name"
-    },
-    {
         displayName: "Organization Name",
         placeHolderName: "Enter organization name.",
         attrName: "name"
+    },
+    {
+        displayName: "Unique ID",
+        placeHolderName: "Enter unique identifier.",
+        attrName: "unique_name"
     },
     {
         displayName: "Organization Description",
@@ -92,29 +92,29 @@ export const OrgNormFields: NormalFieldModel[] = [
 
 export const LicNormFields: NormalFieldModel[] = [
     {
-        displayName: "Unique ID",
-        placeHolderName: "Enter unique identifier.",
-        attrName: "unique_name"
-    },
-    {
         displayName: "License Name",
         placeHolderName: "Enter license name",
         attrName: "name"
     },
+    {
+        displayName: "Unique ID",
+        placeHolderName: "Enter unique identifier.",
+        attrName: "unique_name"
+    }
 ];
 
 
 
 export const SoftNormFields: NormalFieldModel[] = [
     {
-        displayName: "Unique ID",
-        placeHolderName: "Enter unique identifier.",
-        attrName: "unique_name"
-    },
-    {
         displayName: "Software Name",
         placeHolderName: "Enter software name",
         attrName: "name"
+    },
+    {
+        displayName: "Unique ID",
+        placeHolderName: "Enter unique identifier.",
+        attrName: "unique_name"
     },
     {
         displayName: "Software Description",

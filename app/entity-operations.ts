@@ -14,7 +14,7 @@ export const getLanguages = (langs: Language[]) => {
 };
 
 export const getNewLicense = (id_: string) => {
-    return { id: id_, unique_name: '' }
+    return { id: id_, unique_name: '', name: '' }
 };
 
 export const getNewSoftware = (id_: string) => {

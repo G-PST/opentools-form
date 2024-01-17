@@ -4,11 +4,12 @@ import {InputLabelView} from "./input-label-view";
 
 interface SearchViewProps {
     searchTexts: string[];
+    error: string;
     onAdd: (text: string) => void
 }
 
 const SearchView: React.FC<SearchViewProps> = ({
-    searchTexts, onAdd
+    searchTexts, error, onAdd
 }) => {
     const [searchVal, setSearchVal] = useState('');
     const [showFilters, setShowFilters] = useState(false);
@@ -35,6 +36,7 @@ const SearchView: React.FC<SearchViewProps> = ({
             </div>
             <span className="absolute top-1.5 left-2 
             text-gray-600 cursor-pointer">&#128269;</span>
+            {error && <p className="text-red-500 text-sm"> {error} </p>}
 
             {showFilters && getFilteredTexts().length > 0 && <div className="absolute top-0 left-0 w-full 
             bg-white -translate-y-full shadow-md px-3 py-1">
@@ -51,6 +53,7 @@ const SearchView: React.FC<SearchViewProps> = ({
                     })
                 }
             </div>}
+
         </div>
     </>
     )
@@ -58,6 +61,7 @@ const SearchView: React.FC<SearchViewProps> = ({
 
 interface SearchableFieldViewProps {
     fieldName: string;
+    error: string;
     availTags: string[];
     attachedTags: string[];
     onAdd: (text: string) => void;
@@ -94,6 +98,7 @@ const TagsView: React.FC<TagsViewProps> = ({
 
 const SearchableFieldView: React.FC<SearchableFieldViewProps> = ({
     fieldName,
+    error,
     availTags,
     attachedTags,
     onAdd,
@@ -105,6 +110,7 @@ const SearchableFieldView: React.FC<SearchableFieldViewProps> = ({
             <SearchView
                 searchTexts={availTags}
                 onAdd={onAdd}
+                error={error}
             />
 
             <TagsView
