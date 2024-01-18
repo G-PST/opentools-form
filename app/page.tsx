@@ -65,7 +65,7 @@ const getValidatorObjs = (ents: Record<string, any>[], req_properties: string[])
     return newErrs;
 };
 
-const getValidatorUseEffects = (ents: EntityType[],
+const useValidators = (ents: EntityType[],
     setErrorFunc: React.Dispatch<React.SetStateAction<EntityError[]>>,
     reqFields: string[]
 ) => {
@@ -89,7 +89,7 @@ const useEntityState = <T extends EntityType>(initialState: T[]): {
 
 
 
-const getStates = () => {
+const useGetStates = () => {
 
     // Avaliable entities for dynamic dropdowns
     const licensesState = useEntityState<License>([]);
@@ -198,7 +198,7 @@ const getStates = () => {
 
 const HomePage: React.FC = () => {
 
-    const entityStates: Record<string, any> = getStates();
+    const entityStates: Record<string, any> = useGetStates();
 
     // State for managing active menu and pages
     const [activeMenu, setActiveMenu] = useState(Object.keys(entityStates)[0]);
@@ -276,7 +276,8 @@ const HomePage: React.FC = () => {
     }
 
     Object.entries(entityStates).map(([_, val]) => {
-        getValidatorUseEffects(val.state, val.setError, val.reqProps)
+        // eslint-disable-next-line
+        useValidators(val.state, val.setError, val.reqProps) 
     })
 
     const hasErrors = () => {
@@ -350,11 +351,11 @@ export default function Home() {
             <footer><div id="footer-contents">
                 <p id="footer-blurb">
 
-                    <a href="https://globalpst.org/">The Global Power Transformation Consortium</a>'s
+                    <a href="https://globalpst.org/">The Global Power Transformation Consortium</a>&apos;s
                     <a href="https://globalpst.org/what-we-do/open-data-tools/">
                         Pillar on Open Data and Tools
                     </a>
-                    ("Pillar 5") works to advance the open source power system
+                    (&quot;Pillar 5&quot;) works to advance the open source power system
                     modeling and operations ecosystem, and
                     supports the development and application of open tools and data
                     by partner system operators and the open source community.

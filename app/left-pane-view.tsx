@@ -94,6 +94,7 @@ export const LeftPaneView: React.FC<LeftPaneViewProps> = ({
                                     
                                     return (
                                         <LeftSubMenuItem
+                                            key={subitem.name}
                                             name={subitem.name}
                                             numErr={filteredErr ? Object.entries(filteredErr).reduce((acc, [key, val]) => {
                                                 if (key != 'uuid' && val != null) {

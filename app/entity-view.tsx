@@ -25,7 +25,7 @@ export const EntityView: React.FC<EntityViewProps> = ({
     ) => {
         setEntityFunc(currentEnt => currentEnt.map(
             (x) => x.id === id_ ?
-                { ...x, [property_]: (x as any)[property_].filter((l) => l !== text) } : x
+                { ...x, [property_]: (x as any)[property_].filter((l:any) => l !== text) } : x
         ))
     };
 
