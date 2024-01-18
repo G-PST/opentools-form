@@ -281,9 +281,9 @@ const HomePage: React.FC = () => {
 
     const hasErrors = () => {
         const hasErrVal = Object.entries(entityStates).reduce((acc, [key, val]) => {
-            acc += val.error.map((err:Record<string, string>) => Object.entries(err).reduce(
+            acc += val.error.map((err: Record<string, string>) => Object.entries(err).reduce(
                 (acc_, [key_, val_]) => {
-                    if (key_ != 'uuid' && val_ != null){
+                    if (key_ != 'uuid' && val_ != null) {
                         acc_ += 1
                     }
                     return acc_
@@ -308,7 +308,7 @@ const HomePage: React.FC = () => {
 
             <div className="flex flex-col gap-y-5 md:flex-row justify-between gap-x-10 h-[calc(100vh-280px)]">
 
-                <div className="w-full md:w-1/5 bg-gray-100 shadow-md px-2 py-3 
+                <div className="w-full md:w-2/5 bg-gray-100 shadow-md px-2 py-3 
                     md:overflow-y-auto overflow">
                     <LeftPaneView
                         entityMapping={getEntityForLeftPane()}
@@ -319,7 +319,7 @@ const HomePage: React.FC = () => {
                     />
                 </div>
 
-                <div className="w-full md:w-4/5 md:overflow-y-auto">
+                <div className="w-full md:w-3/5 md:overflow-y-auto">
                     {getCurrentView(activeMenu)}
                 </div>
             </div>
@@ -330,8 +330,43 @@ const HomePage: React.FC = () => {
 
 export default function Home() {
     return (
-        <main className="relative px-5 lg:px-20 py-10 h-screen">
-            <HomePage />
-        </main>
+        <>
+            <header>
+                <div id="header-contents">
+                    <a id="header-title" href="{{site.baseurl}}">
+                        <img src="https://globalpst.org/wp-content/uploads/GPSTC-logo-blk-x2.png" alt="Global Power System Transformation Consortium" />
+                        <h1 >Open Tools Portal</h1>
+                    </a>
+                    <nav id="header-nav"></nav>
+                    <a id="header-button" href="{{site.baseurl}}contribute">Contribute</a>
+                </div>
+            </header>
+            <main>
+                <div className="relative py-10 h-screen">
+                    <HomePage />
+                </div>
+            </main>
+
+            <footer><div id="footer-contents">
+                <p id="footer-blurb">
+
+                    <a href="https://globalpst.org/">The Global Power Transformation Consortium</a>'s
+                    <a href="https://globalpst.org/what-we-do/open-data-tools/">
+                        Pillar on Open Data and Tools
+                    </a>
+                    ("Pillar 5") works to advance the open source power system
+                    modeling and operations ecosystem, and
+                    supports the development and application of open tools and data
+                    by partner system operators and the open source community.
+                </p>
+                <div id="footer-socials">
+                    <ul>
+                        <li><a href="https://www.linkedin.com/company/global-pst/" target="_blank" rel="noopener"><svg data-prefix="fab" data-icon="linkedin-in" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"></path></svg></a></li>
+                        <li><a target="_blank" href="https://twitter.com/global_pst" rel="noopener"><svg data-prefix="fab" data-icon="x-twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path></svg></a></li>
+                        <li><a href="https://www.youtube.com/channel/UCNHmlGlkAwcmniv5uJT3Ptg" target="_blank" rel="noopener"><svg data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg></a></li>
+                    </ul>
+                </div>
+            </div></footer>
+        </>
     )
 }

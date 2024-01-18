@@ -8,6 +8,8 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-color));
 }
@@ -40,4 +42,280 @@ body {
 /* Adjust button text style as needed */
 .custom-button span {
   font-size: 16px;
+}
+
+
+/*  ------------------- */
+
+ html, body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+  --gpst-blue: #0f4292;
+  --gpst-blue-dark: #073473;
+  --max-width: 1200px;
+}
+
+a {
+  color: var(--gpst-blue);
+}
+
+#construction-banner {
+  flex-shrink: 0;
+  display: block;
+  color: white;
+  background-color: red;
+  max-width: 100%;
+  text-align: center;
+  padding: 1em;
+  margin: 0;
+}
+
+#construction-banner a {
+  color: white;
+}
+
+header {
+  border-bottom: var(--gpst-blue) solid 10px;
+}
+
+#header-contents {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  max-width: var(--max-width);
+}
+
+#header-title {
+  display: flex;
+  align-items: center;
+  color: #000;
+  text-decoration: none;
+}
+
+#header-title img {
+  height: 80px;
+  padding: 10px;
+}
+
+#header-title h1 {
+  flex-grow: 1;
+  margin-left: 0.5em;
+  font-size: 1.5em;
+}
+
+#header-nav {
+  flex-grow: 1;
+}
+
+#header-button {
+  color: white;
+  background-color: var(--gpst-blue);
+  border-radius: 10px;
+  text-decoration: none;
+  padding: 1em;
+  margin: 1em;
+}
+
+#header-button:hover {
+  background-color: var(--gpst-blue-dark);
+}
+
+main {
+  flex-grow: 1;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  gap: 1em;
+  padding: 0 1em;
+}
+
+main.full {
+  display: block;
+}
+
+main article {
+  flex-grow: 1;
+}
+
+main aside {
+  width: 300px;
+  flex-shrink: 0;
+} 
+
+footer {
+  flex-shrink: 0;
+  background-color: var(--gpst-blue);
+  font-size: 0.8em;
+  color: #FFF;
+}
+
+footer a {
+  color: #FFF;
+}
+
+footer a:hover {
+  color: #DDD;
+}
+
+#footer-contents {
+  display: flex;
+  align-items: center;
+  margin: 0px auto;
+  padding: 1em 2em;
+  max-width: var(--max-width);
+}
+
+#footer-blurb {
+  max-width: 50%;
+}
+
+#footer-socials {
+  flex-grow: 1;
+  text-align: right;
+}
+
+#footer-socials ul {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
+}
+
+#footer-socials li {
+  display: block;
+}
+
+#footer-socials svg {
+  height: 2em;
+}
+
+/* Sidebars */
+
+
+/* Tables */
+
+table.tools-table {
+  background-color: #E8E8E8;
+  border-radius: 10px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table.tools-table tbody tr:nth-child(odd) {
+  background-color: #F0F0F0;
+}
+
+table.tools-table tbody tr:nth-child(even) {
+  background-color: #F8F8F8;
+}
+
+table.tools-table th, table.tools-table td {
+  text-align: left;
+  padding: 0.8em;
+}
+
+table.tools-table ul {
+  padding: 0;
+  margin: 0;
+}
+
+table.tools-table li {
+  display: inline;
+}
+
+/* Homepage */
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 0;
+}
+
+.category {
+  display: block;
+  flex-grow: 1;
+  background-color: #F8F8F8;
+  border-radius: 1em;
+}
+
+.category-title{
+  display: block;
+  padding: 0.8em;
+  background-color: #E8E8E8;
+  border-radius: 1em 1em 0 0;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.category-title:hover {
+  color: var(--gpst-blue);
+}
+
+.subcategory {
+  display: block;
+  width: 100%;
+  background-color: #F0F0F0;
+  border-radius: 1em;
+}
+
+.subcategory-title {
+  display: block;
+  background-color: #E8E8E8;
+  padding: 1em;
+  border-radius: 1em 1em 0 0;
+
+  color: #333;
+  text-decoration: none;
+}
+
+.subcategory-title:hover {
+  color: var(--gpst-blue);
+}
+
+.category-tool-list, .subcategory-list, .subcategory-tool-list {
+  display: flex;
+  gap: 0.5em;
+  padding: 1em;
+}
+
+.category-tool, .subcategory-tool {
+  display: inline;
+}
+
+.tool-title {
+
+  border-radius: 0.4em;
+  padding: 0.3em;
+  background-color: #888;
+
+  color: #FFF;
+  text-decoration: none;
+  font-size: 0.8em;
+
+}
+.tool-title:hover {
+  background-color: var(--gpst-blue);
+}
+
+/* Category Pages */
+
+.category-subcategories {
+  margin-bottom: 1em;
+}
+
+.category-subcategories ul {
+  display: inline;
+  padding: 0;
+}
+
+.category-subcategories li {
+  display: inline;
 }
