@@ -31,16 +31,6 @@ const DownloadJSONButtonView: React.FC<{ onDownload: () => void }> = ({
     )
 }
 
-// const UploadJSONButtonView: React.FC<{ onUpload: () => void }> = ({
-//     onUpload
-// }) => {
-//     return (
-//         <button className="bg-indigo-500 px-2 text-white rounded py-1"
-//             onClick={() => onUpload()}
-//         > Upload JSON </button>
-//     )
-// }
-
 type EntityError = Record<string, string>;
 
 const getValidatorObjs = (ents: Record<string, any>[], req_properties: string[]) => {
@@ -106,7 +96,7 @@ const useGetStates = () => {
     const updateAvailData = (data: any, property: string,
         setter: React.Dispatch<React.SetStateAction<string[]>>) => {
         if (data && data[property]) {
-            setter(data[property].map((item: any) => item.name));
+            setter(data[property].map((item: any) => `${item.name} (${item.id})`));
         }
     };
 

@@ -2,15 +2,15 @@ import { Language, License, Organization } from "./entity-interfaces";
 
 
 export const getLicenses = (licenses: License[]) => {
-    return licenses.map((license: License) => license.name)
+    return licenses.map((license: License) => `${license.name} (${license.unique_name})`)
 };
 
 export const getOrganizations = (orgs: Organization[]) => {
-    return orgs.map((org: Organization) => org.name)
+    return orgs.map((org: Organization) => `${org.name} (${org.unique_name})`)
 };
 
 export const getLanguages = (langs: Language[]) => {
-    return langs.map((lang: Language) => lang.name)
+    return langs.map((lang: Language) => `${lang.name} (${lang.unique_name})`)
 };
 
 export const getNewLicense = (id_: string) => {
