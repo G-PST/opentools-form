@@ -324,12 +324,12 @@ export default function Home() {
         <>
             <header>
                 <div id="header-contents">
-                    <a id="header-title" href="{{site.baseurl}}">
+                    <a id="header-title" href="https://opentools.globalpst.org">
                         <img src="https://globalpst.org/wp-content/uploads/GPSTC-logo-blk-x2.png" alt="Global Power System Transformation Consortium" />
                         <h1 >Open Tools Portal</h1>
                     </a>
                     <nav id="header-nav"></nav>
-                    <a id="header-button" href="{{site.baseurl}}contribute">Contribute</a>
+                    <a id="header-button" href="https://opentools.globalpst.org/contribute">Contribute</a>
                 </div>
             </header>
             <main>
