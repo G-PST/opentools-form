@@ -151,6 +151,14 @@ const useGetStates = () => {
     ];
 
     return {
+        Software: {
+            ...softwareState,
+            getNew: getNewSoftware,
+            normalFields: SoftNormFields,
+            searchFields: SoftwareSearchFields,
+            icon: IoCodeSlash,
+            reqProps: ['name', 'unique_name', 'licenses', 'organizations', 'languages']
+        },
         Licenses: {
             ...licensesState,
             getNew: getNewLicense,
@@ -174,14 +182,6 @@ const useGetStates = () => {
             searchFields: LangSearchFields,
             icon: IoLanguage,
             reqProps: ['name', 'unique_name', 'url']
-        },
-        Software: {
-            ...softwareState,
-            getNew: getNewSoftware,
-            normalFields: SoftNormFields,
-            searchFields: SoftwareSearchFields,
-            icon: IoCodeSlash,
-            reqProps: ['name', 'unique_name', 'licenses', 'organizations', 'languages']
         }
     };
 }

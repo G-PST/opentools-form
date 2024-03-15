@@ -5,11 +5,12 @@ import {InputLabelView} from "./input-label-view";
 interface SearchViewProps {
     searchTexts: string[];
     error: string;
+    fieldName: string;
     onAdd: (text: string) => void
 }
 
 const SearchView: React.FC<SearchViewProps> = ({
-    searchTexts, error, onAdd
+    searchTexts, error, fieldName, onAdd
 }) => {
     const [searchVal, setSearchVal] = useState('');
     const [showFilters, setShowFilters] = useState(false);
@@ -27,7 +28,7 @@ const SearchView: React.FC<SearchViewProps> = ({
                         setShowFilters(true)
                         setSearchVal(e.target.value)
                     }}
-                    placeholder="Search for categories" />
+                    placeholder={`Search for ${fieldName.toLowerCase()}`} />
                 {searchTexts.includes(searchVal) && <button className="bg-gray-500 p-1 
                 mx-1 rounded-md text-white w-[100px]
                 hover:cursor-pointer hover:bg-orange-500 disabled"
@@ -108,6 +109,7 @@ const SearchableFieldView: React.FC<SearchableFieldViewProps> = ({
         <div>
             <InputLabelView text={fieldName} />
             <SearchView
+                fieldName={fieldName}
                 searchTexts={availTags}
                 onAdd={onAdd}
                 error={error}
