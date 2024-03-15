@@ -290,7 +290,7 @@ const HomePage: React.FC = () => {
             <HeroSection />
 
             {
-                hasErrors() && <div className="flex justify-center gap-x-10 my-3 items-center">
+                hasErrors() && <div className="flex justify-center gap-x-10 mb-3 items-center">
                     <DownloadJSONButtonView onDownload={handleDownloadJSON} />
                     <UploadJSONSection setFormData={handleUploadJSON} />
                 </div>
@@ -333,7 +333,7 @@ export default function Home() {
                 </div>
             </header>
             <main>
-                <div className="relative py-10 h-screen">
+                <div className="relative py-5 h-screen">
                     <HomePage />
                 </div>
             </main>
