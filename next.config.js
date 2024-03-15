@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: 'export',
-    basePath: '/opentools-form'
+    basePath: '/contribute'
 }
 
 module.exports = nextConfig
